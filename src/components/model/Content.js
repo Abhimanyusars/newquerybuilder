@@ -25,6 +25,7 @@ const Content = ({ setQuery, fieldOptions, criteriaOptions }) => {
       },
     ];
   }, [criteriaOptions, fieldOptions]);
+
   const addFilter = useCallback((index) => {
     setFilters((prevValue) => {
       const newValue = [...prevValue];
@@ -102,6 +103,17 @@ const Content = ({ setQuery, fieldOptions, criteriaOptions }) => {
     setQuery(query);
   }, [filters, setQuery]);
 
+  const maxIndex = Math.max(...Object.keys(filters));
+  console.log(maxIndex, "hi")
+
+  const filterRemoveHandler = index => {
+    console.log(index, "hey")
+    const updatedFilterBody = [...filters];
+    const filterList = updatedFilterBody?.filter((item, i) => i !== index);
+    setFilters(filterList);
+    
+  };
+
   return (
     <div className="p-8 overflow-y-hidden">
       <div className="mb-8" style={{ width: "250px" }}>
@@ -128,6 +140,8 @@ const Content = ({ setQuery, fieldOptions, criteriaOptions }) => {
               onOperatorSelect={onOperatorSelect}
               onSelectChange={(...args) => onSelectChange(...args, index)}
               fieldData={fieldData}
+              filterRemoveHandler={filterRemoveHandler}
+              maxIndex={maxIndex}
             />
           );
         })}
@@ -144,7 +158,10 @@ const QueryGroup = ({
     onOperatorSelect,
     onSelectChange,
     fieldData,
+    filterRemoveHandler,
+    maxIndex
   }) => {
+    console.log("index", index)
     return (
       <div
         className="block p-4 rounded mb-4"
@@ -161,6 +178,22 @@ const QueryGroup = ({
             onSelectChange={(...args) => onSelectChange(...args, index)}
             fieldData={fieldData}
           />
+
+          // { index >= 0 && <button onClick={filterRemoveHandler} index={index}>-</button>}
+          
+          // {maxIndex}
+          // {maxIndex > 0 && (
+          //   <Icon
+          //     iconName="close"
+          //     height="12px"
+          //     width="12px"
+          //     color="#5E3EC5"
+          //     onClick={() => filterRemoveHandler(index)}
+          //   />
+          // )}
+
+          
+
         ))}
         <AddFilterButton addFilter={addFilter} index={index} />
       </div>
@@ -243,6 +276,17 @@ const QueryGroup = ({
       </button>
     );
   };
+
+  // const RemoveFilterButton =() => {
+  //   return(
+  //     <button 
+  //     className="py-2 px-4 rounded-md mt-4"
+  //     style={{ backgroundColor: "#4F46E5" }}
+  //     onClick={() => filterRemoveHandler(index)}>
+  //       Delete
+  //     </button>
+  //   );
+  // };
   
   const AddFilterGroupButton = ({ addFilterGroup }) => {
     return (
